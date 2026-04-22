@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anoushka Saha — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --bg:#050a14;
+    --bg2:#0a1628;
+    --bg3:#0f1f3d;
+    --accent:#00d4ff;
+    --accent2:#7c3aed;
+    --accent3:#f472b6;
+    --text:#e2e8f0;
+    --muted:#64748b;
+    --border:rgba(0,212,255,0.15);
+  }
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow-x:hidden;}
+  canvas#stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+
+  /* NAV */
+  nav{position:fixed;top:0;width:100%;z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(5,10,20,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;color:var(--accent);letter-spacing:2px;}
+  .nav-links{display:flex;gap:2rem;}
+  .nav-links a{color:var(--muted);text-decoration:none;font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;transition:color 0.3s;}
+  .nav-links a:hover{color:var(--accent);}
+
+  /* SECTIONS */
+  section{position:relative;z-index:1;padding:5rem 2rem;}
+  .container{max-width:900px;margin:0 auto;}
+
+  /* HERO */
+  #hero{min-height:100vh;display:flex;align-items:center;padding-top:6rem;}
+  .hero-tag{font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;opacity:0;animation:fadeUp 0.8s 0.2s forwards;}
+  .hero-name{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(3rem,8vw,6rem);line-height:1;color:#fff;margin-bottom:1rem;opacity:0;animation:fadeUp 0.8s 0.4s forwards;}
+  .hero-name span{color:var(--accent);}
+  .hero-role{font-size:1.1rem;color:var(--muted);margin-bottom:0.5rem;opacity:0;animation:fadeUp 0.8s 0.6s forwards;}
+  .hero-desc{font-size:0.95rem;color:var(--muted);max-width:560px;line-height:1.7;margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s 0.8s forwards;}
+  .hero-btns{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s 1s forwards;}
+  .btn{padding:0.75rem 1.75rem;border-radius:4px;font-size:0.85rem;letter-spacing:1px;text-transform:uppercase;text-decoration:none;font-family:'Space Grotesk',sans-serif;font-weight:600;cursor:pointer;transition:all 0.3s;border:none;display:inline-block;}
+  .btn-primary{background:var(--accent);color:#050a14;}
+  .btn-primary:hover{background:#00b8d9;transform:translateY(-2px);}
+  .btn-outline{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .btn-outline:hover{background:rgba(0,212,255,0.08);transform:translateY(-2px);}
+  .hero-badge{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(0,212,255,0.08);border:1px solid var(--border);border-radius:50px;padding:0.4rem 1rem;font-size:0.8rem;color:var(--accent);margin-bottom:1.5rem;opacity:0;animation:fadeUp 0.8s 0s forwards;}
+  .badge-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;flex-shrink:0;}
+
+  /* SECTION HEADERS */
+  .section-label{font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:0.75rem;}
+  .section-title{font-family:'Syne',sans-serif;font-weight:800;font-size:2.5rem;color:#fff;margin-bottom:3rem;}
+  .section-title span{color:var(--accent);}
+  .glow-line{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:0 0 3.5rem;opacity:0.3;}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+  .about-text{color:var(--muted);line-height:1.8;font-size:0.95rem;}
+  .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1.25rem;text-align:center;}
+  .stat-num{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);}
+  .stat-label{font-size:0.78rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+
+  /* SKILLS */
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.75rem;}
+  .skill-chip{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.75rem;font-size:0.82rem;color:var(--text);text-align:center;transition:all 0.3s;cursor:default;}
+  .skill-chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.06);transform:translateY(-2px);}
+  .skill-section{margin-bottom:2.5rem;}
+  .skill-category{font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:1rem;}
+
+  /* PROJECTS */
+  .projects-grid{display:grid;grid-template-columns:1fr;gap:1.5rem;}
+  .project-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.75rem;transition:all 0.3s;position:relative;overflow:hidden;}
+  .project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity 0.3s;}
+  .project-card:hover{border-color:rgba(0,212,255,0.4);transform:translateY(-4px);}
+  .project-card:hover::before{opacity:1;}
+  .project-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;margin-bottom:0.5rem;}
+  .project-role{font-size:0.78rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.75rem;}
+  .project-desc{font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;}
+  .tech-tags{display:flex;flex-wrap:wrap;gap:0.5rem;}
+  .tech-tag{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);border-radius:4px;padding:0.25rem 0.6rem;font-size:0.75rem;color:#a78bfa;}
+  .project-links{display:flex;gap:1rem;margin-top:1rem;}
+  .project-link{font-size:0.8rem;color:var(--accent);text-decoration:none;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid transparent;transition:border-color 0.2s;}
+  .project-link:hover{border-color:var(--accent);}
+
+  /* TIMELINE */
+  .timeline{position:relative;padding-left:2rem;}
+  .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--border);}
+  .timeline-item{position:relative;margin-bottom:2rem;}
+  .timeline-item::before{content:'';position:absolute;left:-2.35rem;top:0.35rem;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);}
+  .timeline-date{font-size:0.75rem;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.25rem;}
+  .timeline-title{font-weight:600;color:#fff;margin-bottom:0.25rem;}
+  .timeline-sub{font-size:0.85rem;color:var(--muted);}
+
+  /* ACHIEVEMENTS */
+  .achievements-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .achievement-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;display:flex;gap:1rem;align-items:flex-start;transition:all 0.3s;}
+  .achievement-card:hover{border-color:rgba(244,114,182,0.4);transform:translateY(-2px);}
+  .ach-icon{font-size:1.5rem;flex-shrink:0;}
+  .ach-title{font-weight:600;color:#fff;font-size:0.9rem;margin-bottom:0.25rem;}
+  .ach-sub{font-size:0.8rem;color:var(--muted);}
+
+  /* CERTIFICATIONS */
+  .certs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:3rem;}
+  .cert-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:all 0.3s;position:relative;overflow:hidden;text-decoration:none;display:block;color:inherit;}
+  .cert-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent3));opacity:0;transition:opacity 0.3s;}
+  .cert-card:hover{border-color:rgba(124,58,237,0.4);transform:translateY(-2px);}
+  .cert-card:hover::after{opacity:1;}
+  .cert-issuer{font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--accent2);margin-bottom:0.5rem;}
+  .cert-name{font-weight:600;color:#fff;font-size:0.88rem;line-height:1.4;}
+  .cert-badge{display:inline-block;margin-top:0.75rem;font-size:0.7rem;padding:0.2rem 0.6rem;background:rgba(0,212,255,0.1);border:1px solid var(--border);border-radius:50px;color:var(--accent);}
+
+  /* CONTACT */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+  .contact-info{display:flex;flex-direction:column;gap:1rem;}
+  .contact-link{display:flex;align-items:center;gap:0.75rem;color:var(--muted);text-decoration:none;font-size:0.9rem;transition:color 0.3s;padding:0.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;}
+  .contact-link:hover{color:var(--accent);border-color:var(--accent);}
+  .contact-icon{width:36px;height:36px;border-radius:6px;background:rgba(0,212,255,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .contact-desc{font-size:0.9rem;color:var(--muted);line-height:1.7;}
+  .lang-tag{display:inline-block;margin:0.25rem;padding:0.3rem 0.75rem;background:var(--bg2);border:1px solid var(--border);border-radius:50px;font-size:0.78rem;color:var(--text);}
+
+  /* FOOTER */
+  footer{text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--muted);font-size:0.8rem;position:relative;z-index:1;}
+  footer span{color:var(--accent);}
+
+  /* ANIMATIONS */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+  /* RESPONSIVE */
+  @media(max-width:700px){
+    .about-grid,.achievements-grid,.contact-grid{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+    .hero-name{font-size:3rem;}
+    .section-title{font-size:1.8rem;}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AS</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#certifications">Certs</a>
+    <a href="#achievements">Achievements</a>
+    <a href="#resume">Resume</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-tag">Hello, I'm</div>
+    <h1 class="hero-name">ANOUSHKA<br><span>SAHA</span></h1>
+    <p class="hero-role">Backend Developer · Software Engineering Student</p>
+    <p class="hero-desc">B.Tech IT student at KIIT with strong fundamentals in programming and problem-solving. Experienced in backend development and building data-driven applications using Node.js, Express, and MySQL.</p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#resume" class="btn btn-outline">Resume</a>
+      <a href="#contact" class="btn btn-outline">Contact Me</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-label">// 01. profile</div>
+    <h2 class="section-title">About <span>Me</span></h2>
+    <div class="glow-line"></div>
+    <div class="about-grid">
+      <div>
+        <p class="about-text">B.Tech Information Technology student at KIIT with strong fundamentals in programming and problem-solving. Proficient in C, Java, and Python, with a growing focus on Data Structures, Operating Systems, and SDLC.</p>
+        <br>
+        <p class="about-text">Experienced in backend development and building data-driven applications. Seeking to apply coding skills and system-level understanding in a software engineering internship.</p>
+        <br>
+        <p class="about-text">Beyond code — music enthusiast, MUN participant, NSS volunteer, and proud band competition winner at KIIT.</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card">
+          <div class="stat-num">7.57</div>
+          <div class="stat-label">CGPA</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">1+</div>
+          <div class="stat-label">Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">6+</div>
+          <div class="stat-label">Certifications</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">2027</div>
+          <div class="stat-label">Graduating</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-label">// 02. arsenal</div>
+    <h2 class="section-title">Tech <span>Skills</span></h2>
+    <div class="glow-line"></div>
+
+    <div class="skill-section">
+      <div class="skill-category">Programming Languages</div>
+      <div class="skills-grid">
+        <div class="skill-chip">C</div>
+        <div class="skill-chip">Java</div>
+        <div class="skill-chip">Python</div>
+        <div class="skill-chip">JavaScript</div>
+      </div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-category">Web & Backend</div>
+      <div class="skills-grid">
+        <div class="skill-chip">Node.js</div>
+        <div class="skill-chip">Express.js</div>
+        <div class="skill-chip">REST APIs</div>
+        <div class="skill-chip">HTML</div>
+        <div class="skill-chip">CSS</div>
+      </div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-category">Core Subjects</div>
+      <div class="skills-grid">
+        <div class="skill-chip">DSA</div>
+        <div class="skill-chip">Operating Systems</div>
+        <div class="skill-chip">DBMS</div>
+        <div class="skill-chip">SDLC</div>
+        <div class="skill-chip">MySQL</div>
+      </div>
+    </div>
+
+    <div class="skill-section">
+      <div class="skill-category">Tools & Soft Skills</div>
+      <div class="skills-grid">
+        <div class="skill-chip">Linux</div>
+        <div class="skill-chip">Git</div>
+        <div class="skill-chip">MS Excel</div>
+        <div class="skill-chip">Leadership</div>
+        <div class="skill-chip">Communication</div>
+        <div class="skill-chip">Team Collaboration</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-label">// 03. builds</div>
+    <h2 class="section-title">Featured <span>Projects</span></h2>
+    <div class="glow-line"></div>
+
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-title">E-Commerce Business Sales Analytics Platform</div>
+        <div class="project-role">Backend Developer</div>
+        <div class="project-desc">
+          Developed backend services and RESTful APIs using Node.js and Express.js. Designed and integrated a MySQL database for efficient data storage and retrieval. Implemented logic for processing large datasets and optimizing query performance. Followed structured SDLC practices and collaborated in a team environment to build scalable, maintainable components.
+        </div>
+        <div class="tech-tags">
+          <span class="tech-tag">Node.js</span>
+          <span class="tech-tag">Express.js</span>
+          <span class="tech-tag">MySQL</span>
+          <span class="tech-tag">REST APIs</span>
+          <span class="tech-tag">SDLC</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/sanoushka" class="project-link" target="_blank">View on GitHub →</a>
+          <!-- Replace with direct repo link when available: href="https://github.com/sanoushka/your-repo-name" -->
+        </div>
+      </div>
+
+      <!-- ADD MORE PROJECTS HERE — copy the block above and fill in details -->
+
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="container">
+    <div class="section-label">// 04. credentials</div>
+    <h2 class="section-title">Certifications & <span>Learning</span></h2>
+    <div class="glow-line"></div>
+
+    <div class="certs-grid">
+      <a href="https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/ifobHAoMjQs9s6bKS/gmf3ypEXBj2wvfQWC_ifobHAoMjQs9s6bKS_bccbC82kKYpTm9mGk_1754818553764_completion_certificate.pdf" target="_blank" class="cert-card">
+        <div class="cert-issuer">Forage</div>
+        <div class="cert-name">Tata Cyber Security Analyst Job Simulation</div>
+        <span class="cert-badge">Click to View ↗</span>
+      </a>
+      <a href="https://www.credly.com/badges/b1481f96-bae2-4ea2-aca3-cb54f58b8321/linked_in_profile" target="_blank" class="cert-card">
+        <div class="cert-issuer">Amazon Web Services</div>
+        <div class="cert-name">AWS Academy Graduate — Cloud Foundations</div>
+        <span class="cert-badge">Click to View ↗</span>
+      </a>
+      <a href="https://www.linkedin.com/in/anoushka-saha-0603052ab/overlay/1757245060836/single-media-viewer/?profileId=ACoAAEqeNggBK0rI9TTzJ5Syz8mixM8dxnsYb-o" target="_blank" class="cert-card">
+        <div class="cert-issuer">Workshop</div>
+        <div class="cert-name">Generative AI — Modern AI Applications</div>
+        <span class="cert-badge">Click to View ↗</span>
+      </a>
+      <a href="https://www.coursera.org/account/accomplishments/records/R7KJZ7EJX7G4" target="_blank" class="cert-card">
+        <div class="cert-issuer">Imperial College London · Coursera</div>
+        <div class="cert-name">Health Systems Development: Policy & Research</div>
+        <span class="cert-badge">Click to View ↗</span>
+      </a>
+      <a href="https://www.udemy.com/certificate/UC-0020d3e1-eef7-49f9-8b05-a6ca8839e8d9/" target="_blank" class="cert-card">
+        <div class="cert-issuer">Udemy</div>
+        <div class="cert-name">HTML & CSS</div>
+        <span class="cert-badge">Click to View ↗</span>
+      </a>
+      <a href="https://www.udemy.com/certificate/UC-5136d44b-0e2d-4207-9773-5abba31b221d/" target="_blank" class="cert-card">
+        <div class="cert-issuer">Udemy</div>
+        <div class="cert-name">JavaScript</div>
+        <span class="cert-badge">Click to View ↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="container">
+    <div class="section-label">// 05. milestones</div>
+    <h2 class="section-title">Achievements & <span>Activities</span></h2>
+    <div class="glow-line"></div>
+
+    <div class="achievements-grid">
+      <div class="achievement-card">
+        <div class="ach-icon">🏆</div>
+        <div>
+          <div class="ach-title">University Band Competition Winner</div>
+          <div class="ach-sub">KIIT University — First place</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="ach-icon">🎵</div>
+        <div>
+          <div class="ach-title">Inter-school Music Competitions</div>
+          <div class="ach-sub">Multiple top positions secured</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="ach-icon">🎼</div>
+        <div>
+          <div class="ach-title">Cabinet Member — Music Club</div>
+          <div class="ach-sub">Official Music Club, KIIT University</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="ach-icon">🌍</div>
+        <div>
+          <div class="ach-title">Model United Nations (MUN)</div>
+          <div class="ach-sub">Public speaking & negotiation skills</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="ach-icon">🤝</div>
+        <div>
+          <div class="ach-title">NSS Volunteer</div>
+          <div class="ach-sub">National Service Scheme — community outreach</div>
+        </div>
+      </div>
+      <div class="achievement-card">
+        <div class="ach-icon">🎤</div>
+        <div>
+          <div class="ach-title">Performed at University Events</div>
+          <div class="ach-sub">Represented KIIT in external competitions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDUCATION TIMELINE -->
+    <div class="section-label" style="margin-top:3.5rem;margin-bottom:1rem;">// Education</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">2023 – 2027</div>
+        <div class="timeline-title">B.Tech — Information Technology</div>
+        <div class="timeline-sub">Kalinga Institute of Industrial Technology (KIIT) · CGPA: 7.57</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">12th Grade</div>
+        <div class="timeline-title">ISC — 86%</div>
+        <div class="timeline-sub">Our Lady Queen of the Missions School, Kolkata</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">10th Grade</div>
+        <div class="timeline-title">ICSE — 89%</div>
+        <div class="timeline-sub">Our Lady Queen of the Missions School, Kolkata</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESUME -->
+<section id="resume">
+  <div class="container">
+    <div class="section-label">// 06. resume</div>
+    <h2 class="section-title">My <span>Resume</span></h2>
+    <div class="glow-line"></div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:2.5rem;text-align:center;max-width:500px;margin:0 auto;">
+      <div style="font-size:3rem;margin-bottom:1rem;">📄</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:0.5rem;">Anoushka Saha — Resume</div>
+      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1.75rem;line-height:1.6;">A snapshot of my technical skills, projects, education, and certifications.</p>
+      <!-- Replace # with your resume link when ready -->
+      <a href="https://drive.google.com/file/d/19XeoolOpUICKiDBQzALTKYxdUJkBl0oX/view?usp=sharing" target="_blank" class="btn btn-primary" style="text-decoration:none;">View Resume ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-label">// 07. connect</div>
+    <h2 class="section-title">Get In <span>Touch</span></h2>
+    <div class="glow-line"></div>
+
+    <div class="contact-grid">
+      <div class="contact-info">
+        <a href="mailto:sanoushka13@gmail.com" class="contact-link">
+          <div class="contact-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          sanoushka13@gmail.com
+        </a>
+        <a href="tel:+917003180704" class="contact-link">
+          <div class="contact-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          +91 7003180704
+        </a>
+        <a href="https://www.linkedin.com/in/anoushka-saha-0603052ab" target="_blank" class="contact-link">
+          <div class="contact-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </div>
+          linkedin.com/in/anoushka-saha
+        </a>
+        <a href="https://github.com/sanoushka" target="_blank" class="contact-link">
+          <div class="contact-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          </div>
+          github.com/sanoushka
+        </a>
+      </div>
+
+      <div>
+        <p class="contact-desc">Currently seeking software engineering internship opportunities. Whether you have a project in mind, want to collaborate, or just want to connect — feel free to reach out!</p>
+        <br><br>
+        <div class="section-label" style="margin-bottom:0.75rem;">Languages</div>
+        <div>
+          <span class="lang-tag">Bengali (Native)</span>
+          <span class="lang-tag">English (Proficient)</span>
+          <span class="lang-tag">Hindi (Intermediate)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Designed & Built by <span>Anoushka Saha</span> · 2025</p>
+</footer>
+
+<script>
+  // ── Starfield ──
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 200; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.2,
+        o: Math.random(),
+        s: Math.random() * 0.003 + 0.001,
+        d: Math.random() > 0.5 ? 1 : -1
+      });
+    }
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      s.o += s.s * s.d;
+      if (s.o > 1 || s.o < 0) s.d *= -1;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,212,255,${s.o * 0.6})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  resize(); initStars(); drawStars();
+  window.addEventListener('resize', () => { resize(); initStars(); });
+
+  // ── Scroll-reveal ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll(
+    '.project-card, .achievement-card, .timeline-item, .stat-card, .cert-card'
+  ).forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+
+  // ── Active nav highlight ──
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.getAttribute('id');
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+
+</body>
+</html>
